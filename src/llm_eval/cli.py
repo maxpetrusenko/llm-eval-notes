@@ -1,15 +1,15 @@
 """CLI for running evals."""
 
 import os
-from collections.abc import Sequence
 from typing import Any
 
 import typer
 
+from llm_eval.evals.brittleness import BrittlenessResult
 from llm_eval.evals.comparison import ComparisonRunner
 from llm_eval.evals.hallucination import HallucinationResult
-from llm_eval.evals.brittleness import BrittlenessResult
 from llm_eval.evals.structured import StructuredResult
+from llm_eval.evals.tool_use import ToolUseResult
 from llm_eval.providers.anthropic import AnthropicProvider
 from llm_eval.providers.base import LLMProvider, MockProvider
 from llm_eval.providers.openai import OpenAIProvider
@@ -19,7 +19,7 @@ app = typer.Typer(help="LLM evaluation artifacts")
 
 @app.command()
 def run(
-    eval_name: str = typer.Argument(..., help="Eval type: hallucination, brittleness, structured, all"),
+    eval_name: str = typer.Argument(..., help="Eval type: hallucination, brittleness, structured, tool-use, all"),
     model: str = typer.Option("gpt-4o", help="Model identifier"),
     provider: str = typer.Option("openai", help="Provider: openai, anthropic, mock"),
     output: str | None = typer.Option(None, help="Output file path"),
@@ -59,6 +59,13 @@ def run(
         s_results: list[StructuredResult] = runner.structured.run(llm)
         metrics = runner.structured.calculate_metrics(s_results)
         _print_metrics("Structured Output", metrics)
+    elif eval_name == "tool-use":
+        if not runner.tool_use:
+            typer.echo("Tool-use eval not configured", err=True)
+            raise typer.Exit(1)
+        t_results: list[ToolUseResult] = runner.tool_use.run(llm)
+        metrics = runner.tool_use.calculate_metrics(t_results)
+        _print_metrics("Tool Use", metrics)
     else:
         typer.echo(f"Unknown eval: {eval_name}", err=True)
         raise typer.Exit(1)
@@ -97,6 +104,7 @@ def list_evals() -> None:
     typer.echo("  hallucination  - Ground truth comparison, hallucination detection")
     typer.echo("  brittleness    - Prompt variation consistency tests")
     typer.echo("  structured     - JSON schema validation tests")
+    typer.echo("  tool-use       - Tool selection and argument extraction")
     typer.echo("  all            - Run all evals")
 
 

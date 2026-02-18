@@ -11,6 +11,8 @@ from llm_eval.evals.brittleness import DEFAULT_SCENARIOS, BrittlenessEval
 from llm_eval.evals.hallucination import DEFAULT_CASES, HallucinationEval
 from llm_eval.evals.structured import DEFAULT_CASES as STRUCTURED_DEFAULT_CASES
 from llm_eval.evals.structured import StructuredOutputEval
+from llm_eval.evals.tool_use import DEFAULT_CASES as TOOL_USE_DEFAULT_CASES
+from llm_eval.evals.tool_use import ToolUseEval
 from llm_eval.providers.base import LLMProvider
 
 
@@ -66,6 +68,18 @@ class ComparisonReport(pydantic.BaseModel):
                 )
             lines.append("")
 
+        # Tool use table
+        if "tool_use" in self.summary:
+            lines.append("### Tool Use")
+            lines.append("| Model | Tool Selection | Parameter Accuracy | Both Correct |")
+            lines.append("|-------|---------------|---------------------|--------------|")
+            for model, metrics in self.summary["tool_use"].items():
+                lines.append(
+                    f"| {model} | {metrics['tool_selection_accuracy']:.1%} | "
+                    f"{metrics['parameter_accuracy']:.1%} | {metrics['both_correct']:.1%} |"
+                )
+            lines.append("")
+
         return "\n".join(lines)
 
     def save(self, path: str | Path) -> None:
@@ -90,6 +104,7 @@ class ComparisonRunner(pydantic.BaseModel):
     hallucination: HallucinationEval | None = None
     brittleness: BrittlenessEval | None = None
     structured: StructuredOutputEval | None = None
+    tool_use: ToolUseEval | None = None
 
     def run_all(self, providers: list[LLMProvider]) -> ComparisonReport:
         """Run all evals across all providers."""
@@ -98,6 +113,7 @@ class ComparisonRunner(pydantic.BaseModel):
             "hallucination": {},
             "brittleness": {},
             "structured": {},
+            "tool_use": {},
         }
 
         for provider in providers:
@@ -134,6 +150,16 @@ class ComparisonRunner(pydantic.BaseModel):
                 }
                 summary["structured"][model_key] = s_metrics
 
+            # Tool use
+            if self.tool_use:
+                t_results = self.tool_use.run(provider)
+                t_metrics = self.tool_use.calculate_metrics(t_results)
+                runs[model_key]["tool_use"] = {
+                    "results": [r.model_dump(mode="json") for r in t_results],
+                    "metrics": t_metrics,
+                }
+                summary["tool_use"][model_key] = t_metrics
+
         return ComparisonReport(
             timestamp=datetime.now().isoformat(),
             runs=runs,
@@ -147,4 +173,5 @@ class ComparisonRunner(pydantic.BaseModel):
             hallucination=HallucinationEval(cases=DEFAULT_CASES),
             brittleness=BrittlenessEval(scenarios=DEFAULT_SCENARIOS),
             structured=StructuredOutputEval(cases=STRUCTURED_DEFAULT_CASES),
+            tool_use=ToolUseEval(cases=TOOL_USE_DEFAULT_CASES),
         )
