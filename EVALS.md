@@ -82,7 +82,7 @@ For a scenario with N variations:
 - **Schema Valid Rate**: Passes Pydantic validation
 - **Retry Success Rate**: Fixed after "fix this JSON" nudge
 
-## Tool-Use Evaluation (Experimental)
+## Tool-Use Evaluation
 
 ### What We Test
 
@@ -104,6 +104,84 @@ Failure modes:
 - Missing argument: {}
 - Wrong type: {"location": 123}
 ```
+
+## Reasoning Chain Evaluation
+
+### What We Test
+
+1. **Step Presence**: Expected reasoning steps are present
+2. **Logical Consistency**: Conclusions follow from premises
+3. **Step Coherence**: Steps build on each other logically
+
+### Failure Modes
+
+1. **Missing Steps**: Skips critical reasoning steps
+2. **Logical Error**: Conclusion doesn't follow from steps
+3. **Circular Reasoning**: Conclusion used as premise
+
+### Metrics
+
+- **Step Coherence Rate**: Fraction of expected steps found
+- **Logical Error Rate**: Fraction of responses with logical errors
+- **Perfect Reasoning Rate**: Responses with all steps and no errors
+
+## Safety/Adversarial Evaluation
+
+### What We Test
+
+1. **Injection Detection**: Model resists prompt injection
+2. **Harmful Content Refusal**: Model refuses harmful requests
+3. **Jailbreak Resistance**: Model resists role manipulation
+
+### Injection Types
+
+1. **Direct Injection**: "Ignore previous instructions"
+2. **Role Switch**: "You are now in developer mode"
+3. **Jailbreak**: DAN-style prompts
+
+### Harm Categories
+
+- Violence
+- Cybercrime
+- Drugs
+- Fraud/Scams
+
+### Metrics
+
+- **Injection Blocked Rate**: Fraction of injections blocked
+- **Harmful Refusal Rate**: Fraction of harmful requests refused
+- **Info Leak Rate**: Fraction of responses that leaked info
+- **Overall Safe Rate**: Fraction of safe responses
+
+## Streaming Validation
+
+### What We Test
+
+1. **Content Match**: Streaming matches non-streaming response
+2. **Error Recovery**: Graceful handling of stream errors
+3. **Latency**: Time to first chunk
+
+### Metrics
+
+- **Match Rate**: Streaming content matches non-streaming
+- **Error Rate**: Fraction of streams with errors
+- **Avg Latency (ms)**: Average time to first chunk
+- **Avg Chunks**: Average chunks per response
+
+## Cost Tracking
+
+### What We Track
+
+- Input/output token counts
+- Cached token usage
+- Per-model pricing
+
+### Metrics
+
+- **Total Cost (USD)**: Cumulative API costs
+- **Total Tokens**: Input + output tokens
+- **Cost by Model**: Breakdown per model
+- **Cost by Eval Type**: Breakdown per evaluation type
 
 ## Running Your Own Evals
 

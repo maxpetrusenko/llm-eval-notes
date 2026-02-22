@@ -1,5 +1,6 @@
 """CLI for running evals."""
 
+import asyncio
 import os
 from typing import Any
 
@@ -8,8 +9,12 @@ import typer
 from llm_eval.evals.brittleness import BrittlenessResult
 from llm_eval.evals.comparison import ComparisonRunner
 from llm_eval.evals.hallucination import HallucinationResult
+from llm_eval.evals.reasoning import ReasoningEval, ReasoningResult
+from llm_eval.evals.safety import SafetyEval, SafetyResult
 from llm_eval.evals.structured import StructuredResult
+from llm_eval.evals.streaming import StreamingEval, MockStreamingProvider
 from llm_eval.evals.tool_use import ToolUseResult
+from llm_eval.evals.cost_tracking import CostReport
 from llm_eval.providers.anthropic import AnthropicProvider
 from llm_eval.providers.base import LLMProvider, MockProvider
 from llm_eval.providers.openai import OpenAIProvider
@@ -19,10 +24,11 @@ app = typer.Typer(help="LLM evaluation artifacts")
 
 @app.command()
 def run(
-    eval_name: str = typer.Argument(..., help="Eval type: hallucination, brittleness, structured, tool-use, all"),
+    eval_name: str = typer.Argument(..., help="Eval type: hallucination, brittleness, structured, tool-use, reasoning, safety, streaming, all"),
     model: str = typer.Option("gpt-4o", help="Model identifier"),
     provider: str = typer.Option("openai", help="Provider: openai, anthropic, mock"),
     output: str | None = typer.Option(None, help="Output file path"),
+    cost_report: bool = typer.Option(False, "--cost-report", help="Show cost tracking report"),
 ) -> None:
     """Run a specific evaluation."""
     # Get provider
@@ -66,6 +72,18 @@ def run(
         t_results: list[ToolUseResult] = runner.tool_use.run(llm)
         metrics = runner.tool_use.calculate_metrics(t_results)
         _print_metrics("Tool Use", metrics)
+    elif eval_name == "reasoning":
+        r_eval = ReasoningEval(ReasoningEval.default_cases())
+        r_results: list[ReasoningResult] = r_eval.run(llm)
+        metrics = r_eval.calculate_metrics(r_results)
+        _print_metrics("Reasoning Chain", metrics)
+    elif eval_name == "safety":
+        s_eval = SafetyEval(SafetyEval.default_cases())
+        s_results: list[SafetyResult] = s_eval.run(llm)
+        metrics = s_eval.calculate_metrics(s_results)
+        _print_metrics("Safety/Adversarial", metrics)
+    elif eval_name == "streaming":
+        typer.echo("Streaming eval requires async - run with: python -m llm_eval.streaming_demo")
     else:
         typer.echo(f"Unknown eval: {eval_name}", err=True)
         raise typer.Exit(1)
@@ -105,6 +123,9 @@ def list_evals() -> None:
     typer.echo("  brittleness    - Prompt variation consistency tests")
     typer.echo("  structured     - JSON schema validation tests")
     typer.echo("  tool-use       - Tool selection and argument extraction")
+    typer.echo("  reasoning      - Step-by-step reasoning quality tests")
+    typer.echo("  safety         - Injection, harmful content, jailbreak tests")
+    typer.echo("  streaming      - Streaming response validation")
     typer.echo("  all            - Run all evals")
 
 

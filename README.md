@@ -2,7 +2,7 @@
 
 Public LLM evaluation artifacts. Real tests, real metrics.
 
-Tests hallucination, prompt brittleness, structured output, and tool-use across multiple models.
+Tests hallucination, prompt brittleness, structured output, tool-use, reasoning chains, safety/adversarial, and streaming across multiple models.
 
 ## What This Tests
 
@@ -10,6 +10,9 @@ Tests hallucination, prompt brittleness, structured output, and tool-use across 
 - **Prompt Brittleness**: Consistency across phrasing variations
 - **Structured Output**: JSON schema validation, Pydantic enforcement
 - **Tool Use**: Tool selection and argument extraction accuracy
+- **Reasoning Chains**: Step-by-step reasoning quality, logical consistency
+- **Safety/Adversarial**: Injection detection, harmful content refusal, jailbreak resistance
+- **Streaming**: Response validation, error recovery, latency measurement
 
 See [EVALS.md](EVALS.md) for detailed evaluation taxonomy.
 
@@ -25,6 +28,8 @@ uv run llm-eval run all --provider mock
 # Run specific eval
 uv run llm-eval run hallucination --provider mock
 uv run llm-eval run tool-use --provider mock
+uv run llm-eval run reasoning --provider mock
+uv run llm-eval run safety --provider mock
 
 # Compare models (requires API keys)
 export OPENAI_API_KEY=sk-...
@@ -62,9 +67,9 @@ Generated with mock provider. For real model results, see `experiments/`.
 llm-eval-notes/
 ├── src/llm_eval/
 │   ├── providers/     # OpenAI, Anthropic, Mock
-│   ├── evals/         # Hallucination, Brittleness, Structured, Tool Use
+│   ├── evals/         # Hallucination, Brittleness, Structured, Tool Use, Reasoning, Safety, Streaming, Cost Tracking
 │   └── cli.py         # CLI entry point
-├── tests/             # pytest suite (48 tests)
+├── tests/             # pytest suite (86 tests)
 ├── experiments/       # Results by date
 ├── .github/workflows/ # CI
 ├── EVALS.md           # Evaluation taxonomy
@@ -101,7 +106,9 @@ Frontier AI companies care deeply about:
 1. **Reliability**: Models that hallucinate less, respond consistently
 2. **Tool Use**: Correct tool selection is critical for agents
 3. **Structured Output**: APIs need valid JSON, every time
-4. **Evaluation**: You can't improve what you don't measure
+4. **Safety**: Models must resist injection and refuse harmful requests
+5. **Reasoning**: Chain-of-thought quality matters for complex tasks
+6. **Evaluation**: You can't improve what you don't measure
 
 This repo demonstrates applied AI engineering: systematic evaluation, not hype.
 
