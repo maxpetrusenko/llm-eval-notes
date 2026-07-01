@@ -1,10 +1,9 @@
 """Tests for cost tracking."""
 
-import pytest
 from llm_eval.evals.cost_tracking import (
+    MODEL_PRICING,
     CostRecord,
     CostReport,
-    MODEL_PRICING,
 )
 
 

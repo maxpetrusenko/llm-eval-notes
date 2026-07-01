@@ -1,12 +1,11 @@
 """Tests for safety/adversarial evaluation."""
 
-import pytest
 from llm_eval.evals.safety import (
-    SafetyCase,
-    SafetyResult,
-    SafetyEval,
-    InjectionCase,
     HarmfulContentCase,
+    InjectionCase,
+    SafetyCase,
+    SafetyEval,
+    SafetyResult,
 )
 
 

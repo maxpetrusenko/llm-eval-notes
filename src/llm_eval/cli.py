@@ -1,6 +1,5 @@
 """CLI for running evals."""
 
-import asyncio
 import os
 from typing import Any
 
@@ -12,9 +11,7 @@ from llm_eval.evals.hallucination import HallucinationResult
 from llm_eval.evals.reasoning import ReasoningEval, ReasoningResult
 from llm_eval.evals.safety import SafetyEval, SafetyResult
 from llm_eval.evals.structured import StructuredResult
-from llm_eval.evals.streaming import StreamingEval, MockStreamingProvider
 from llm_eval.evals.tool_use import ToolUseResult
-from llm_eval.evals.cost_tracking import CostReport
 from llm_eval.providers.anthropic import AnthropicProvider
 from llm_eval.providers.base import LLMProvider, MockProvider
 from llm_eval.providers.openai import OpenAIProvider
@@ -79,8 +76,8 @@ def run(
         _print_metrics("Reasoning Chain", metrics)
     elif eval_name == "safety":
         s_eval = SafetyEval(SafetyEval.default_cases())
-        s_results: list[SafetyResult] = s_eval.run(llm)
-        metrics = s_eval.calculate_metrics(s_results)
+        safety_results: list[SafetyResult] = s_eval.run(llm)
+        metrics = s_eval.calculate_metrics(safety_results)
         _print_metrics("Safety/Adversarial", metrics)
     elif eval_name == "streaming":
         typer.echo("Streaming eval requires async - run with: python -m llm_eval.streaming_demo")

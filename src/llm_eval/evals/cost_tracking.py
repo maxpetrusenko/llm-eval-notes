@@ -3,7 +3,6 @@
 from dataclasses import dataclass, field
 from typing import Any
 
-
 # Pricing per 1M tokens (as of 2025)
 MODEL_PRICING = {
     # OpenAI
@@ -33,7 +32,7 @@ class CostRecord:
     eval_type: str = "unknown"
     case_id: str | None = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.cost_usd == 0.0:
             self.cost_usd = self.calculate_cost()
 

@@ -2,6 +2,10 @@
 
 Production-style LLM evaluation harness for finding hallucination, prompt brittleness, schema drift, and tool-use failures before they ship.
 
+![LLM Eval Notes workflow](docs/assets/llm-eval-notes-workflow-poster.png)
+
+[Watch the 8-second workflow video](docs/assets/llm-eval-notes-workflow.mp4)
+
 ![Eval pipeline dashboard](docs/assets/eval-pipeline.svg)
 
 ## What This Proves

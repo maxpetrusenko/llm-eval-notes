@@ -1,8 +1,8 @@
 """Reasoning chain evaluation - validates step-by-step reasoning quality."""
 
+import re
 from dataclasses import dataclass, field
 from typing import Any
-import re
 
 from llm_eval.providers.base import LLMProvider
 

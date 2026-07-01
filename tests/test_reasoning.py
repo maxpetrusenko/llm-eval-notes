@@ -1,10 +1,9 @@
 """Tests for reasoning chain evaluation."""
 
-import pytest
 from llm_eval.evals.reasoning import (
     ReasoningCase,
-    ReasoningResult,
     ReasoningEval,
+    ReasoningResult,
     ReasoningStep,
 )
 

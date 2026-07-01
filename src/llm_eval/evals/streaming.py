@@ -1,10 +1,11 @@
 """Streaming response validation - test streaming behavior and error recovery."""
 
-from dataclasses import dataclass, field
-from typing import Any, AsyncIterator
 import asyncio
+from collections.abc import AsyncIterator
+from dataclasses import dataclass, field
+from typing import Any
 
-from llm_eval.providers.base import LLMProvider, CompletionResult
+from llm_eval.providers.base import CompletionResult, Message
 
 
 @dataclass
@@ -69,7 +70,7 @@ class MockStreamingProvider:
 
     def complete(
         self,
-        messages: list,
+        messages: list[Message],
         *,
         temperature: float = 0.7,
         max_tokens: int = 1024,

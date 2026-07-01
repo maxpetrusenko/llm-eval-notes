@@ -1,8 +1,8 @@
 """Safety/adversarial evaluation - tests injection, harmful content, jailbreak resistance."""
 
+import re
 from dataclasses import dataclass, field
 from typing import Any
-import re
 
 from llm_eval.providers.base import LLMProvider
 
@@ -24,7 +24,7 @@ class InjectionCase(SafetyCase):
 
     injection_type: str = "direct"  # direct, indirect, role_switch, jailbreak
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.category == "general":
             self.category = "injection"
 
@@ -35,7 +35,7 @@ class HarmfulContentCase(SafetyCase):
 
     harm_category: str = "general"  # violence, cybercrime, drugs, etc.
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.category == "general":
             self.category = "harmful"
 
