@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">LLM evaluation pipeline dashboard</title>
+  <desc id="desc">Static dashboard showing fixtures, model adapters, eval runners, metrics, CI gates, and failure reports.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f7f3ea; }
+      .panel { fill: #fffaf0; stroke: #1b2a2f; stroke-width: 2; }
+      .ink { fill: #1b2a2f; font-family: Georgia, 'Times New Roman', serif; }
+      .muted { fill: #5a676b; font-family: Georgia, 'Times New Roman', serif; }
+      .label { fill: #fffaf0; font-family: Georgia, 'Times New Roman', serif; font-weight: 700; }
+      .green { fill: #2f6f5e; }
+      .red { fill: #b94b3f; }
+      .gold { fill: #d89b2b; }
+      .blue { fill: #315c83; }
+      .line { stroke: #1b2a2f; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+      .thin { stroke: #1b2a2f; stroke-width: 1.5; fill: none; }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1b2a2f"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1200" height="620"/>
+  <rect x="34" y="34" width="1132" height="552" rx="10" class="panel"/>
+
+  <text x="70" y="88" class="ink" font-size="34" font-weight="700">llm-eval-notes</text>
+  <text x="70" y="124" class="muted" font-size="18">Failure-oriented eval harness for hallucination, brittleness, structured output, and tool-use regressions.</text>
+
+  <rect x="70" y="165" width="210" height="128" rx="8" fill="#1b2a2f"/>
+  <text x="96" y="205" class="label" font-size="21">Golden fixtures</text>
+  <text x="96" y="238" class="label" font-size="15">cases, schemas, tools</text>
+  <text x="96" y="264" class="label" font-size="15">adversarial prompts</text>
+
+  <path d="M282 229 H357" class="line"/>
+
+  <rect x="360" y="165" width="220" height="128" rx="8" fill="#315c83"/>
+  <text x="386" y="205" class="label" font-size="21">Provider adapters</text>
+  <text x="386" y="238" class="label" font-size="15">mock, OpenAI, Anthropic</text>
+  <text x="386" y="264" class="label" font-size="15">fast fail on missing keys</text>
+
+  <path d="M582 229 H657" class="line"/>
+
+  <rect x="660" y="165" width="220" height="128" rx="8" fill="#2f6f5e"/>
+  <text x="686" y="205" class="label" font-size="21">Eval runners</text>
+  <text x="686" y="238" class="label" font-size="15">per-case evidence</text>
+  <text x="686" y="264" class="label" font-size="15">aggregate metrics</text>
+
+  <path d="M882 229 H957" class="line"/>
+
+  <rect x="960" y="165" width="140" height="128" rx="8" fill="#b94b3f"/>
+  <text x="986" y="205" class="label" font-size="21">Gate</text>
+  <text x="986" y="238" class="label" font-size="15">CI checks</text>
+  <text x="986" y="264" class="label" font-size="15">threshold table</text>
+
+  <text x="70" y="352" class="ink" font-size="21" font-weight="700">Current mock evidence</text>
+  <line x1="70" y1="370" x2="1100" y2="370" class="thin"/>
+
+  <g transform="translate(70 400)">
+    <rect width="235" height="92" rx="8" fill="#fffaf0" stroke="#1b2a2f" stroke-width="2"/>
+    <text x="20" y="32" class="ink" font-size="17" font-weight="700">Hallucination</text>
+    <text x="20" y="62" class="green" font-size="25" font-weight="700" font-family="Georgia, 'Times New Roman', serif">100% safe</text>
+  </g>
+  <g transform="translate(335 400)">
+    <rect width="235" height="92" rx="8" fill="#fffaf0" stroke="#1b2a2f" stroke-width="2"/>
+    <text x="20" y="32" class="ink" font-size="17" font-weight="700">Brittleness</text>
+    <text x="20" y="62" class="green" font-size="25" font-weight="700" font-family="Georgia, 'Times New Roman', serif">100% consistent</text>
+  </g>
+  <g transform="translate(600 400)">
+    <rect width="235" height="92" rx="8" fill="#fffaf0" stroke="#1b2a2f" stroke-width="2"/>
+    <text x="20" y="32" class="ink" font-size="17" font-weight="700">Structured output</text>
+    <text x="20" y="62" class="red" font-size="25" font-weight="700" font-family="Georgia, 'Times New Roman', serif">0% schema valid</text>
+  </g>
+  <g transform="translate(865 400)">
+    <rect width="235" height="92" rx="8" fill="#fffaf0" stroke="#1b2a2f" stroke-width="2"/>
+    <text x="20" y="32" class="ink" font-size="17" font-weight="700">Tool use</text>
+    <text x="20" y="62" class="red" font-size="25" font-weight="700" font-family="Georgia, 'Times New Roman', serif">0% both correct</text>
+  </g>
+
+  <rect x="70" y="520" width="1030" height="34" rx="6" fill="#d89b2b"/>
+  <text x="92" y="543" class="ink" font-size="16" font-weight="700">Read failures, not averages: each regression gets case id, expected output, observed output, metric impact, and root-cause label.</text>
+</svg>
